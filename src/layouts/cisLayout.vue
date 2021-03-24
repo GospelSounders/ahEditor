@@ -622,8 +622,6 @@ export default {
         // }
         // let allHymns = care.data;
         let allHymns = await this.getAllHymns();
-        console.log('-------------')
-        console.log('-------------', allHymns)
         this.allHymns = allHymns.map((item) =>{
           item = item.slice(0).replace(".html", "")
           // while(item.length <3)item =`0${item}`
@@ -999,7 +997,6 @@ export default {
         // let owner = "GospelSounders";
         // let repo = "ch1941.adh";
         let path = `htmlFilesNoImages/${this.selectedHymn}.html`;
-        alert(path)
         let [err, care] = await to(
           axios.get(
             `https://raw.githubusercontent.com/${owner}/${cisRepo}/master/${path}`
