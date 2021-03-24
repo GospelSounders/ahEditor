@@ -1,8 +1,8 @@
 {
-  "name": "ch1941editor",
+  "name": "adventhymnaleditor",
   "version": "0.0.1",
-  "description": "Editor for CH1941",
-  "productName": "ch1941 Editor",
+  "description": "Editor for Advent Hymnals",
+  "productName": "Advent Hymnals Editor",
   "author": "Brian Onang'o <surgbc@gmail.com>",
   "private": true,
   "scripts": {

@@ -27,12 +27,12 @@
       content-class="bg-primary text-white"
     >
       <q-list>
-        <q-item v-if="loggedIn" clickable @click="openLesson = true">
+        <q-item v-if="loggedIn" clickable @click="openHymn = true">
           <q-item-section avatar>
             <q-icon name="folder_open" />
           </q-item-section>
           <q-item-section>
-            <q-item-label>Open Lesson</q-item-label>
+            <q-item-label>Open Hymn</q-item-label>
           </q-item-section>
         </q-item>
         <q-separator />
@@ -56,13 +56,13 @@
     </q-drawer>
 
     <q-dialog
-      v-model="openLesson"
+      v-model="openHymn"
       transition-show="rotate"
       transition-hide="rotate"
     >
       <q-card>
         <q-card-section class="q-pt-md text-center text-h6">
-          Open Lesson
+          Open Hymn
           <q-separator />
         </q-card-section>
         <q-card-section>
@@ -125,9 +125,9 @@
                 <q-item-section>
                   <q-item-label>All</q-item-label>
                   <q-item-label caption
-                    >All Lessons available in
+                    >All Hymns available in 
                     <a
-                      href="https://github.com/GospelSounders/all-pdf-lessons-in-pdf"
+                      href="https://github.com/GospelSounders/christ-in-song-pdfs/tree/master/splitFiles"
                       target="_blank"
                       >pdf format.</a
                     >
@@ -139,7 +139,7 @@
         </q-card-section>
         <q-card-section>
           <q-form
-            @submit="onSubmitOpenLesson"
+            @submit="onSubmitOpenHymn"
             @reset="onResetgtKey"
             class="q-gutter-md text-white"
           >
@@ -148,7 +148,7 @@
               use-input
               @filter="filterFn"
               filled
-              v-model="selectedLesson"
+              v-model="selectedHymn"
               :options="lessonsToOpen"
               label="File"
               lazy-rules
@@ -286,9 +286,10 @@ const axios = require("axios");
 const owner = "GospelSounders";
 const pdfFilesRepo = "all-pdf-lessons-in-pdf";
 const sabbathschoolRepo = "sabbathschool";
+const cisRepo = "christ-in-song-pdfs";
 const repo = "ch1941.adh";
 const settings = require("../services/values.json");
-const allLessons = require("../services/allLessons.json");
+const allHymns = require("../services/allHymns.json");
 
 export default {
   name: "MainLayout",
@@ -301,8 +302,8 @@ export default {
 
     this.checkforCredentials();
 
-    this.getAllLessons();
-    this.getAllExistingLessons();
+    this.getAllHymns();
+    this.getAllExistingHymns();
 
     this.changedLessonType();
 
@@ -322,18 +323,18 @@ export default {
       lines: [],
       allElements: [],
       leftDrawerOpen: false,
-      openLesson: true,
+      openHymn: true,
       loginDialog: false,
       loggedIn: false,
       gkKey: null,
       gtKeyErrorMessage: "",
-      allLessons: [],
+      allHymns: [],
       existingLessons: [],
       existings: [],
       lessonsToOpen: [],
-      allLessonsToOpen: [],
+      allHymnsToOpen: [],
       lessonsToOpen: [],
-      selectedLesson: "",
+      selectedHymn: "",
     };
   },
   methods: {
@@ -538,18 +539,18 @@ export default {
         this.$refs.pageEditor.srcdoc = tmpSrcDoc;
       }, 1000);
     },
-    async getAllLessons() {
-      // if (!window.localStorage.getItem("allLessons")) {
+    async getAllHymns() {
+      // if (!window.localStorage.getItem("allHymns")) {
       //   let [err, care] = await to(axios.get(
-      //     `https://raw.githubusercontent.com/${owner}/${pdfFilesRepo}/master/allLessons.json`
+      //     `https://raw.githubusercontent.com/${owner}/${pdfFilesRepo}/master/allHymns.json`
       //   ));
       //   if (err) return false;
-      //   window.localStorage.setItem("allLessons", JSON.stringify(care.data))
+      //   window.localStorage.setItem("allHymns", JSON.stringify(care.data))
       // }
-      // return JSON.parse(window.localStorage.getItem("allLessons"));
-      return allLessons;
+      // return JSON.parse(window.localStorage.getItem("allHymns"));
+      return allHymns;
     },
-    async getAllExistingLessons(read = false) {
+    async getAllExistingHymns(read = false) {
       if (!window.localStorage.getItem("allExistingLessons") || read) {
         let [err, care] = await to(
           axios.get(
@@ -619,24 +620,28 @@ export default {
         // if (err) {
         //   return resolve(false);
         // }
-        // let allLessons = care.data;
-        let allLessons = await this.getAllLessons();
+        // let allHymns = care.data;
+        let allHymns = await this.getAllHymns();
         console.log('-------------')
-        console.log('-------------', allLessons)
-        this.allLessons = allLessons.map((item) =>
-          item.slice(2).replace(".html", "")
+        console.log('-------------', allHymns)
+        this.allHymns = allHymns.map((item) =>{
+          item = item.slice(0).replace(".html", "")
+          // while(item.length <3)item =`0${item}`
           // item.name.slice(2).replace(".html", "")
+          return item
+        }
         );
+        this.allHymns = this.allHymns.sort((a,b)=>parseInt(a) - parseInt(b))
 
 
         //  let existings_ = this.existings;
         switch (this.lessonType) {
           case "all":
-            this.allLessonsToOpen = this.allLessons;
+            this.allHymnsToOpen = this.allHymns;
             break;
           case "missing":
-            let allExistingLessons = await this.getAllExistingLessons()
-            this.allLessonsToOpen = this.allLessons.filter((item) => {
+            let allExistingLessons = await this.getAllExistingHymns()
+            this.allHymnsToOpen = this.allHymns.filter((item) => {
               let tmpItem = item;
               // let thisYear = `${tmpItem.slice(0, 4)}-${item.slice(9, 11)}`;
               let thisYear = `${tmpItem.slice(0, 4)}`;
@@ -646,7 +651,7 @@ export default {
             });
             break;
           case "existing":
-            this.openLesson = false;
+            this.openHymn = false;
             this.$q.notify({
               type: "negative",
               message: "Not yet implemented",
@@ -712,10 +717,10 @@ export default {
             return new Promise(async (resolve) => {
               let [err, care] = await to(
                 octokit.request(
-                  `GET /repos/${owner}/${sabbathschoolRepo}/contents/${path}`,
+                  `GET /repos/${owner}/${cisRepo}/contents/${path}`,
                   {
                     owner: owner,
-                    repo: sabbathschoolRepo,
+                    repo: cisRepo,
                     path: path,
                   }
                 )
@@ -742,10 +747,10 @@ export default {
         let existings = this.existings;
         switch (this.lessonType) {
           case "all":
-            this.allLessonsToOpen = this.allLessons;
+            this.allHymnsToOpen = this.allHymns;
             break;
           case "missing":
-            this.allLessonsToOpen = this.allLessons.filter((item) => {
+            this.allHymnsToOpen = this.allHymns.filter((item) => {
               let tmpItem = item;
               let thisYear = `${tmpItem.slice(0, 4)}-${item.slice(9, 11)}`;
               // console.log(item, thisYear);
@@ -753,7 +758,7 @@ export default {
             });
             break;
           case "existing":
-            this.openLesson = false;
+            this.openHymn = false;
             this.$q.notify({
               type: "negative",
               message: "Not yet implemented",
@@ -910,14 +915,14 @@ export default {
     filterFn(val, update) {
       if (val === "") {
         update(() => {
-          this.lessonsToOpen = this.allLessonsToOpen;
+          this.lessonsToOpen = this.allHymnsToOpen;
         });
         return;
       }
 
       update(() => {
         const needle = val.toLowerCase();
-        this.lessonsToOpen = this.allLessonsToOpen.filter(
+        this.lessonsToOpen = this.allHymnsToOpen.filter(
           (v) => v.toLowerCase().indexOf(needle) > -1
         );
       });
@@ -933,7 +938,7 @@ export default {
         hymnNumber = hymnNumber;
         while (hymnNumber.length < 3) hymnNumber = `0${hymnNumber}`;
       } else {
-        hymnNumber = this.selectedLesson;
+        hymnNumber = this.selectedHymn;
       }
       // console.log(hymnNumber);
       let path = `extracted/${hymnNumber}`;
@@ -968,38 +973,39 @@ export default {
       );
     },
     async nextOriginalFile() {
-      if (this.selectedLesson === "") this.selectedLesson = "page1";
+      if (this.selectedHymn === "") this.selectedHymn = "page1";
       else {
-        let tmp = parseInt(this.selectedLesson.replace("page", ""));
+        let tmp = parseInt(this.selectedHymn.replace("page", ""));
         tmp++;
-        this.selectedLesson = `page${tmp}`;
+        this.selectedHymn = `page${tmp}`;
       }
-      this.onSubmitOpenLesson();
+      this.onSubmitOpenHymn();
     },
     async prevOriginalFile() {
-      if (this.selectedLesson === "") this.selectedLesson = "page1";
+      if (this.selectedHymn === "") this.selectedHymn = "page1";
       else {
-        let tmp = parseInt(this.selectedLesson.replace("page", ""));
+        let tmp = parseInt(this.selectedHymn.replace("page", ""));
         tmp--;
         if (tmp < 1) tmp = 1;
-        this.selectedLesson = `page${tmp}`;
+        this.selectedHymn = `page${tmp}`;
       }
-      this.onSubmitOpenLesson();
+      this.onSubmitOpenHymn();
     },
-    async onSubmitOpenLesson() {
+    async onSubmitOpenHymn() {
       return new Promise(async (resolve, reject) => {
         const octokit = new Octokit({
           auth: this.loggedIn,
         });
         // let owner = "GospelSounders";
         // let repo = "ch1941.adh";
-        let path = `htmlFilesNoImages/SS${this.selectedLesson}.html`;
+        let path = `htmlFilesNoImages/${this.selectedHymn}.html`;
+        alert(path)
         let [err, care] = await to(
           axios.get(
-            `https://raw.githubusercontent.com/${owner}/${pdfFilesRepo}/master/${path}`
+            `https://raw.githubusercontent.com/${owner}/${cisRepo}/master/${path}`
           )
         );
-        this.openLesson = false;
+        this.openHymn = false;
         if (err) {
           return resolve(false);
         }

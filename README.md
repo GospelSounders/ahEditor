@@ -1,3 +1,3 @@
-# ch1941 Editor (ch1941editor)
+# Advent Hymnals Editor
 
-Tools for proofreading scanned and OCRed Sabbath School Lessons
+Tools for proofreading scanned and OCRed Hymn score sheets to extract lyrics, notes and headings

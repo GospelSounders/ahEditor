@@ -112,9 +112,9 @@ module.exports = function (/* ctx */) {
       workboxPluginMode: 'GenerateSW', // 'GenerateSW' or 'InjectManifest'
       workboxOptions: {}, // only for GenerateSW
       manifest: {
-        name: `ch1941 Editor`,
-        short_name: `ch1941 Editor`,
-        description: `Editor for CH1941`,
+        name: `adventhymnals Editor`,
+        short_name: `adventhymnals Editor`,
+        description: `Editor for Advent Hymnals`,
         display: 'standalone',
         orientation: 'portrait',
         background_color: '#ffffff',
@@ -179,7 +179,7 @@ module.exports = function (/* ctx */) {
       builder: {
         // https://www.electron.build/configuration/configuration
 
-        appId: 'ch1941editor'
+        appId: 'adventhymnalseditor'
       },
 
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
